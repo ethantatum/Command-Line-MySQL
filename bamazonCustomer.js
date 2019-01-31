@@ -29,5 +29,45 @@ connection.query(`SELECT * FROM products`, function(err, res) {
 DEPARTMENT: ${res[i].department_name} ..... PRICE: $${res[i].price} ..... ITEMS AVAILABLE: ${res[i].stock_quantity}
         `);
     }
-    connection.end();
-})
+    askCustomer();
+});
+
+function askCustomer() {
+    connection.query(`SELECT * FROM products`, function(err, res) {
+        if (err) throw err;
+        inquirer
+            .prompt([
+                {
+                    name: 'ids',
+                    type: 'list',
+                    message: 'What is the Item ID of the product you want to purchase?',
+                    choices: function() {
+                        let listIDs = [];
+                        for(let j = 0; j < res.length; j++) {
+                            listIDs.push(res[j].item_id);
+                        }
+                        return listIDs;
+                    }
+                },
+                {
+                        name: 'amount',
+                        type: 'input',
+                        message: 'How many of the items would you like to purchase?'
+                }
+            ])
+            .then(function(userRes) {
+                let purchaseItem;
+                for(let k = 0; k < res.length; k++) {
+                    if(res[k].item_id === userRes.ids) {
+                        purchaseItem = res[k];
+                    }
+                }
+                console.log(purchaseItem);
+                if(purchaseItem.stock_quantity < user.amount) {
+                    console.log(`We apologize...we currently only have ${purchaseItem.stock_quantity} of ${purchaseItem.product_name} in stock. Please try again.
+                    `);
+                    askCustomer();
+                }
+            })
+    })
+} // Ends askCustomer function
