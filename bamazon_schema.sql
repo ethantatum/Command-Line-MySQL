@@ -12,3 +12,7 @@ primary key(item_id)
 SELECT * FROM products;
 INSERT INTO products(product_name, department_name, price, stock_quantity)
 VALUES ('Rapid Cell Phone Charger(Type C)', 'Electronics', 12.99, 2748);
+
+UPDATE products
+SET product_name = '400 Thread Count Egyptian Cotton Sheets (Queen)'
+WHERE item_id = 9;
