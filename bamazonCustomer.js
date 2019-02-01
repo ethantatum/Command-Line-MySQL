@@ -61,7 +61,12 @@ function askCustomer() {
                     console.log(`Sorry, that's not a valid Item ID - please try again!
                     `);
                     askCustomer();
-                } else {
+                } else if(isNaN(userRes.amount)) {
+                    console.log(`Oops, it looks like you didn't enter a number for the items you want to buy. Please try again!
+                    `);
+                    askCustomer();
+                } 
+                else {
                     let purchaseItem;
                     for(let k = 0; k < res.length; k++) {
                         if(res[k].item_id === parseInt(userRes.ids)) {
@@ -72,6 +77,25 @@ function askCustomer() {
                         console.log(`We apologize...we currently only have ${purchaseItem.stock_quantity} of ${purchaseItem.product_name} in stock. Please try again.
                         `);
                         askCustomer();
+                    }
+                    else {
+                        connection.query(
+                            `UPDATE products SET ? WHERE ?`,
+                            [
+                                {
+                                    stock_quantity: (purchaseItem.stock_quantity) - (userRes.amount)
+                                },
+                                {
+                                    item_id: parseInt(userRes.ids)
+                                }
+                            ],
+                            function(error) {
+                                if (error) throw err;
+                                console.log(`Congratulations! You purchased ${userRes.amount} of ${purchaseItem.product_name} for $${(purchaseItem.price) * (userRes.amount)}.
+                                `);
+                                connection.end();
+                            }
+                        )
                     }
                 }
             })
