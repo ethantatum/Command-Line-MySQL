@@ -18,15 +18,21 @@ const connection = mysql.createConnection({
   
 connection.connect(function(err) {
     if (err) throw err;
-    console.log(`Connected as id ${connection.threadId}
-    `);
+    console.log(`           +++++++++++++++++++++++++++++++++++++++++++++++
+           +  Welcome to the Bamazon Marketplace!        +
+           +  You are connected with the shopper id ${connection.threadId}  +
+           +++++++++++++++++++++++++++++++++++++++++++++++
+`);
 });
 
 connection.query(`SELECT * FROM products`, function(err, res) {
     if (err) throw err;
+    console.log(`                   Check out our amazing products!
+                   -------------------------------
+`);
     for(let i = 0; i < res.length; i++) {
-        console.log(`ITEM ID: ${res[i].item_id} ..... PRODUCT NAME: ${res[i].product_name}
-DEPARTMENT: ${res[i].department_name} ..... PRICE: $${res[i].price} ..... ITEMS AVAILABLE: ${res[i].stock_quantity}
+        console.log(`  ITEM ID: ${res[i].item_id} ..... PRODUCT NAME: ${res[i].product_name}
+  DEPARTMENT: ${res[i].department_name} ..... PRICE: $${res[i].price} ..... ITEMS AVAILABLE: ${res[i].stock_quantity}
         `);
     }
     askCustomer();
@@ -58,11 +64,11 @@ function askCustomer() {
             ])
             .then(function(userRes) {
                 if(isNaN(userRes.ids) || userRes.ids > res.length) {
-                    console.log(`Sorry, that's not a valid Item ID - please try again!
+                    console.log(`  Sorry, that's not a valid Item ID - please try again!
                     `);
                     askCustomer();
                 } else if(isNaN(userRes.amount)) {
-                    console.log(`Oops, it looks like you didn't enter a number for the items you want to buy. Please try again!
+                    console.log(`  Oops, it looks like you didn't enter a number for the items you want to buy. Please try again!
                     `);
                     askCustomer();
                 } 
@@ -74,7 +80,7 @@ function askCustomer() {
                         }
                     }
                     if(purchaseItem.stock_quantity < userRes.amount) {
-                        console.log(`We apologize...we currently only have ${purchaseItem.stock_quantity} of ${purchaseItem.product_name} in stock. Please try again.
+                        console.log(`  We apologize...we currently only have ${purchaseItem.stock_quantity} of ${purchaseItem.product_name} in stock. Please try again.
                         `);
                         askCustomer();
                     }
@@ -91,7 +97,7 @@ function askCustomer() {
                             ],
                             function(error) {
                                 if (error) throw err;
-                                console.log(`Congratulations! You purchased ${userRes.amount} of ${purchaseItem.product_name} for $${(purchaseItem.price) * (userRes.amount)}.
+                                console.log(`  Congratulations! You purchased ${userRes.amount} of ${purchaseItem.product_name} for $${(purchaseItem.price) * (userRes.amount)}.
                                 `);
                                 connection.end();
                             }
