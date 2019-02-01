@@ -39,15 +39,16 @@ function askCustomer() {
             .prompt([
                 {
                     name: 'ids',
-                    type: 'list',
-                    message: 'What is the Item ID of the product you want to purchase?',
-                    choices: function() {
-                        let listIDs = [];
-                        for(let j = 0; j < res.length; j++) {
-                            listIDs.push(res[j].item_id);
-                        }
-                        return listIDs;
-                    }
+                    type: 'input',
+                    message: 'What is the Item ID of the product you want to purchase?'
+                    // BELOW finally brought up list, but kept starting over (1 - 10,  1 - 10, etc)
+                    // choices: function() {
+                    //     let listIDs = [];
+                    //     for(let j = 0; j < res.length; j++) {
+                    //         listIDs.push(`Item ID: ${res[j].item_id}`);
+                    //     }
+                    //     return listIDs;
+                    // }
                 },
                 {
                         name: 'amount',
@@ -56,17 +57,22 @@ function askCustomer() {
                 }
             ])
             .then(function(userRes) {
-                let purchaseItem;
-                for(let k = 0; k < res.length; k++) {
-                    if(res[k].item_id === userRes.ids) {
-                        purchaseItem = res[k];
-                    }
-                }
-                console.log(purchaseItem);
-                if(purchaseItem.stock_quantity < user.amount) {
-                    console.log(`We apologize...we currently only have ${purchaseItem.stock_quantity} of ${purchaseItem.product_name} in stock. Please try again.
+                if(isNaN(userRes.ids) || userRes.ids > res.length) {
+                    console.log(`Sorry, that's not a valid Item ID - please try again!
                     `);
                     askCustomer();
+                } else {
+                    let purchaseItem;
+                    for(let k = 0; k < res.length; k++) {
+                        if(res[k].item_id === parseInt(userRes.ids)) {
+                            purchaseItem = res[k];
+                        }
+                    }
+                    if(purchaseItem.stock_quantity < userRes.amount) {
+                        console.log(`We apologize...we currently only have ${purchaseItem.stock_quantity} of ${purchaseItem.product_name} in stock. Please try again.
+                        `);
+                        askCustomer();
+                    }
                 }
             })
     })
