@@ -18,7 +18,8 @@ const connection = mysql.createConnection({
   
 connection.connect(function(err) {
     if (err) throw err;
-    console.log(`           +++++++++++++++++++++++++++++++++++++++++++++++
+    console.log(`
+           +++++++++++++++++++++++++++++++++++++++++++++++
            +  Welcome to the Bamazon Marketplace!        +
            +  You are connected with the shopper id ${connection.threadId}  +
            +++++++++++++++++++++++++++++++++++++++++++++++
@@ -27,7 +28,8 @@ connection.connect(function(err) {
 
 connection.query(`SELECT * FROM products`, function(err, res) {
     if (err) throw err;
-    console.log(`                   Check out our amazing products!
+    console.log(`
+                   Check out our amazing products!
                    -------------------------------
 `);
     for(let i = 0; i < res.length; i++) {

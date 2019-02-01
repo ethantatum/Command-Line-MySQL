@@ -18,7 +18,8 @@ const connection = mysql.createConnection({
   
 connection.connect(function(err) {
     if (err) throw err;
-    console.log(`           +++++++++++++++++++++++++++++++++++++++++++++++
+    console.log(`
+           +++++++++++++++++++++++++++++++++++++++++++++++
            +  Welcome to the Bamazon manager portal!     +
            +  You are connected with the manager id ${connection.threadId}  +
            +++++++++++++++++++++++++++++++++++++++++++++++
@@ -55,7 +56,8 @@ function firstPrompt() {
 function viewAll() {
     connection.query(`SELECT * FROM products`, function(err, res) {
         if (err) throw err;
-        console.log(`                   ALL ITEMS IN MARKETPLACE
+        console.log(`
+                   ALL ITEMS IN MARKETPLACE
                    ------------------------
 `);
         for(let i = 0; i < res.length; i++) {
@@ -74,6 +76,10 @@ function viewAll() {
             .then(function(check) {
                 if(check.confirm) {
                     firstPrompt();
+                }
+                else {
+                    console.log(`  Thank you. Goodbye!`);
+                    connection.end();
                 }
             })
     });
