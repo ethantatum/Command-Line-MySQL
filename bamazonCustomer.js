@@ -23,7 +23,7 @@ connection.connect(function(err) {
            +  Welcome to the Bamazon Marketplace!        +
            +  You are connected with the shopper id ${connection.threadId}  +
            +++++++++++++++++++++++++++++++++++++++++++++++
-`);
+`.bold.rainbow);
 });
 
 connection.query(`SELECT * FROM products`, function(err, res) {

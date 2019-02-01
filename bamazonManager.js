@@ -2,6 +2,8 @@ const mysql = require("mysql");
 
 const inquirer = require("inquirer");
 
+const colors = require('colors');
+
 const connection = mysql.createConnection({
     host: "localhost",
   
@@ -23,7 +25,7 @@ connection.connect(function(err) {
            +  Welcome to the Bamazon manager portal!     +
            +  You are connected with the manager id ${connection.threadId}  +
            +++++++++++++++++++++++++++++++++++++++++++++++
-`);
+`.bold);
     firstPrompt();
 });
 
@@ -53,6 +55,26 @@ function firstPrompt() {
         })
 } // End of firstPrompt function
 
+function continuePrompt() {
+    inquirer
+        .prompt([
+            {
+                name: 'continue',
+                type: 'confirm',
+                message: 'Would you like to enter another command?'
+            }
+        ])
+        .then(function(check) {
+            if(check.continue) {
+                firstPrompt();
+            }
+            else {
+                console.log(`  Thank you. Goodbye!`);
+                connection.end();
+            }
+        })
+} // End of continuePrompt function
+
 function viewAll() {
     connection.query(`SELECT * FROM products`, function(err, res) {
         if (err) throw err;
@@ -65,22 +87,21 @@ function viewAll() {
   PRICE: $${res[i].price} ..... ITEMS AVAILABLE: ${res[i].stock_quantity}
             `);
         }
-        inquirer
-            .prompt([
-                {
-                    name: 'continue',
-                    type: 'confirm',
-                    message: 'Would you like to enter another command?'
-                }
-            ])
-            .then(function(check) {
-                if(check.confirm) {
-                    firstPrompt();
-                }
-                else {
-                    console.log(`  Thank you. Goodbye!`);
-                    connection.end();
-                }
-            })
+        continuePrompt();
     });
-}
+} // End of viewAll function
+
+function viewLow() {
+    connection.query(`SELECT * FROM products WHERE stock_quantity < 5`, function(err, res) {
+        if (err) throw err;
+        console.log(`
+                   LOW INVENTORY ( < 5 in stock)
+                   -----------------------------
+            `.bold.red);
+        for(let i = 0; i < res.length; i++) {
+            console.log(`  ITEMS AVAILABLE: ${res[i].stock_quantity} ..... PRODUCT NAME: ${res[i].product_name}
+            `.bold.red);
+        }
+        continuePrompt();
+    });
+} // End of viewLow function
