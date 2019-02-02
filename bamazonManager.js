@@ -69,7 +69,7 @@ function continuePrompt() {
                 firstPrompt();
             }
             else {
-                console.log(`  Thank you. Goodbye!`);
+                console.log(`  Thank you. Goodbye!`.bold.yellow);
                 connection.end();
             }
         })
@@ -105,3 +105,29 @@ function viewLow() {
         continuePrompt();
     });
 } // End of viewLow function
+
+ function addInv() {
+     connection.query(`SELECT * FROM products`, function(err, res) {
+        if (err) throw err;
+        console.log(`
+                    Select Item to Add Inventory
+                    ----------------------------
+        `);
+        inquirer
+            .prompt([
+                {
+                    name: 'inventory',
+                    type: 'list',
+                    message: 'Select an Item to Add Inventory.',
+                    choices: function() {
+                        let inventory = [];
+                        for(let i = 0; i < res.length; i++) {
+                            inventory.push(`  ${res[i].product_name} ..... ITEMS AVAILABLE: ${res[i].stock_quantity}`);
+                        }
+                        return inventory;
+                    }
+                }
+            ])
+        
+    });
+ }

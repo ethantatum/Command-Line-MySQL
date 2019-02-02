@@ -23,7 +23,7 @@ connection.connect(function(err) {
            +  Welcome to the Bamazon Marketplace!        +
            +  You are connected with the shopper id ${connection.threadId}  +
            +++++++++++++++++++++++++++++++++++++++++++++++
-`.bold.rainbow);
+`);
 });
 
 connection.query(`SELECT * FROM products`, function(err, res) {
@@ -47,16 +47,16 @@ function askCustomer() {
             .prompt([
                 {
                     name: 'ids',
-                    type: 'input',
-                    message: 'What is the Item ID of the product you want to purchase?'
+                    type: 'list',
+                    message: 'What is the Item ID of the product you want to purchase?',
                     // BELOW finally brought up list, but kept starting over (1 - 10,  1 - 10, etc)
-                    // choices: function() {
-                    //     let listIDs = [];
-                    //     for(let j = 0; j < res.length; j++) {
-                    //         listIDs.push(`Item ID: ${res[j].item_id}`);
-                    //     }
-                    //     return listIDs;
-                    // }
+                    choices: function() {
+                        let listIDs = [];
+                        for(let j = 0; j < res.length; j++) {
+                            listIDs.push(`Item ID: ${res[j].item_id}`);
+                        }
+                        return listIDs;
+                    }
                 },
                 {
                         name: 'amount',
