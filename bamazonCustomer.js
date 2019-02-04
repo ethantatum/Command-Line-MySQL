@@ -47,16 +47,14 @@ function askCustomer() {
             .prompt([
                 {
                     name: 'ids',
-                    type: 'list',
+                    type: 'input',
                     message: 'What is the Item ID of the product you want to purchase?',
-                    // BELOW finally brought up list, but kept starting over (1 - 10,  1 - 10, etc)
-                    choices: function() {
-                        let listIDs = [];
-                        for(let j = 0; j < res.length; j++) {
-                            listIDs.push(`Item ID: ${res[j].item_id}`);
+                    validate: function(value) {
+                        if (isNaN(value) === false) {
+                          return true;
                         }
-                        return listIDs;
-                    }
+                        return false;
+                      }
                 },
                 {
                         name: 'amount',
@@ -65,7 +63,7 @@ function askCustomer() {
                 }
             ])
             .then(function(userRes) {
-                if(isNaN(userRes.ids) || userRes.ids > res.length) {
+                if(userRes.ids > res.length) {
                     console.log(`  Sorry, that's not a valid Item ID - please try again!
                     `);
                     askCustomer();
@@ -99,7 +97,9 @@ function askCustomer() {
                             ],
                             function(error) {
                                 if (error) throw err;
-                                console.log(`  Congratulations! You purchased ${userRes.amount} of ${purchaseItem.product_name} for $${(purchaseItem.price) * (userRes.amount)}.
+                                console.log(`  
+  Congratulations! You purchased ${userRes.amount} of ${purchaseItem.product_name} for $${(purchaseItem.price) * (userRes.amount)}.
+  Thank you for shopping on the Bamazon Marketplace!
                                 `);
                                 connection.end();
                             }
