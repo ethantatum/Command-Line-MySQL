@@ -110,9 +110,13 @@ function viewLow() {
      connection.query(`SELECT * FROM products`, function(err, res) {
         if (err) throw err;
         console.log(`
-                    Select Item to Add Inventory
-                    ----------------------------
+                    Current Inventory
+                    -----------------
         `);
+        for(let i = 0; i < res.length; i++) {
+            console.log(`  PRODUCT NAME: ${res[i].product_name} ..... ITEMS AVAILABLE: ${res[i].stock_quantity} 
+            `.bold);
+        }
         inquirer
             .prompt([
                 {
@@ -122,12 +126,103 @@ function viewLow() {
                     choices: function() {
                         let inventory = [];
                         for(let i = 0; i < res.length; i++) {
-                            inventory.push(`  ${res[i].product_name} ..... ITEMS AVAILABLE: ${res[i].stock_quantity}`);
+                            inventory.push(res[i].product_name);
                         }
                         return inventory;
                     }
+                },
+                {
+                    name: 'add',
+                    type: 'input',
+                    message: 'How many would you like to add to the inventory?',
+                    validate: function(value) {
+                        if (isNaN(value) === false) {
+                          return true;
+                        }
+                        return false;
+                      }
                 }
             ])
+            .then(function(userRes) {
+                console.log(userRes.inventory);
+                let addItem;
+                for(let j = 0; j < res.length; j++) {
+                    if(res[j].product_name === userRes.inventory) {
+                        addItem = res[j];
+                    }
+                }
+                console.log(addItem);
+                connection.query(
+                    `UPDATE products SET ? WHERE ?`,
+                    [
+                        {
+                            stock_quantity: (addItem.stock_quantity) + (parseInt(userRes.add))
+                        },
+                        {
+                            product_name: userRes.inventory
+                        }
+                    ],
+                    function(error) {
+                        if (error) throw err;
+                        console.log(`Inventory for ${addItem.product_name} updated successfully.
+                        `);
+                        continuePrompt();
+                    }
+                )
+            })
         
     });
- }
+ }  // ENd of addInv function
+
+ function addNew() {
+     inquirer
+        .prompt ([
+            {
+                name: 'newItem',
+                type: 'input',
+                message: 'What is the new product name?'
+            },
+            {
+                name: 'department',
+                type: 'list',
+                message: 'Select the department for the new product.',
+                choices: [`Collectibles`, `Children's Supplies`, `Automotive`, `Electronics`, `Apparel`, `Jewelry`, `Pet Supplies`, `Home Goods`, `Sporting Goods`, `Tools`, `Other`]
+            },
+            {
+                name: `newPrice`,
+                type: `input`,
+                message: `How much does the new product cost? (Per unit, no dollar signs)`,
+                validate: function(value) {
+                    if (isNaN(value) === false) {
+                      return true;
+                    }
+                    return false;
+                  }
+            },
+            {
+                name: `newStock`,
+                type: `input`,
+                message: `How many units of the new product are in stock?`,
+                validate: function(value) {
+                    if (isNaN(value) === false) {
+                      return true;
+                    }
+                    return false;
+                  }
+            }
+        ])
+        .then(function(addRes) {
+            console.log(`${addRes.newItem} ... ${addRes.department} ... ${addRes.newPrice} ... ${addRes.newStock}
+            `);
+            connection.query(
+                `INSERT INTO products (product_name, department_name, price, stock_quantity) 
+                VALUES ('${addRes.newItem}', '${addRes.department}', ${addRes.newPrice}, ${addRes.newStock})`,
+                function(err) {
+                    if (err) throw err;
+                    console.log(`New Product Added Successfully!
+                    `);
+                    continuePrompt();
+                }
+            )
+        })
+ }  // End of addNew function
