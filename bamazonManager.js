@@ -144,14 +144,12 @@ function viewLow() {
                 }
             ])
             .then(function(userRes) {
-                console.log(userRes.inventory);
                 let addItem;
                 for(let j = 0; j < res.length; j++) {
                     if(res[j].product_name === userRes.inventory) {
                         addItem = res[j];
                     }
                 }
-                console.log(addItem);
                 connection.query(
                     `UPDATE products SET ? WHERE ?`,
                     [
@@ -172,7 +170,7 @@ function viewLow() {
             })
         
     });
- }  // ENd of addInv function
+ }  // End of addInv function
 
  function addNew() {
      inquirer
@@ -212,14 +210,12 @@ function viewLow() {
             }
         ])
         .then(function(addRes) {
-            console.log(`${addRes.newItem} ... ${addRes.department} ... ${addRes.newPrice} ... ${addRes.newStock}
-            `);
             connection.query(
                 `INSERT INTO products (product_name, department_name, price, stock_quantity) 
                 VALUES ('${addRes.newItem}', '${addRes.department}', ${addRes.newPrice}, ${addRes.newStock})`,
                 function(err) {
                     if (err) throw err;
-                    console.log(`New Product Added Successfully!
+                    console.log(`${addRes.newItem} Added Successfully!
                     `);
                     continuePrompt();
                 }
