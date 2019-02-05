@@ -1,5 +1,6 @@
 ![](screen_captures/bamazon_title.JPG)
-An Amazon-style storefront that takes orders from users and adjusts inventory in a database
+
+### An Amazon-style storefront that takes orders from users and adjusts inventory in a database
 
 #### The Bamazon Marketplace is a program written in JavaScript that runs solely in the command line, pulling data from a local MySQL database.
 #### Users can run the Bamazon Customer file to view inventory, select and 'purchase' an item.
